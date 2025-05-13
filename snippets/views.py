@@ -1,5 +1,5 @@
-from snippets.models import Snippet
-from snippets.serializers import SnippetSerializer
+from snippets.models import Snippet, Comment
+from snippets.serializers import SnippetSerializer, CommentSerializer
 from snippets.serializers import UserSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
@@ -29,7 +29,7 @@ class SnippetList(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter,]
     search_fields = ['title', 'code']
     ordering_fields = ('title', 'owner')
-    filter_fields = ('title', 'code', 'linenos', 'owner')
+    filterset_fields = ('title', 'code', 'linenos', 'owner')
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
@@ -41,5 +41,12 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SnippetSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
+class CommentList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
 
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
 
